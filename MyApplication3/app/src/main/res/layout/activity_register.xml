@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/grad_bg"
+    tools:context=".Register">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="24sp"
+            android:textColor="#fff"
+            android:fontFamily="sans-serif"
+            android:text="ĐĂNG KÝ"/>
+
+        <EditText
+            android:id="@+id/edittext_username"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username"
+            android:textColorHint="#80FFFFFF"
+            android:padding="8dp"
+            android:inputType="textPersonName"
+            android:background="@drawable/custorm_edittext_login"
+            android:textColor="#80FFFFFF"/>
+
+        <EditText
+            android:id="@+id/edittext_pass"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:textColorHint="#80FFFFFF"
+            android:padding="8dp"
+            android:inputType="textPassword"
+            android:background="@drawable/custorm_edittext_login"
+            android:textColor="#80FFFFFF"/>
+
+        <EditText
+            android:id="@+id/edittextxacnhanPassword"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Confirm Password"
+            android:textColorHint="#80FFFFFF"
+            android:inputType="textPassword"
+            android:padding="8dp"
+            android:background="@drawable/custorm_edittext_login"
+            android:textColor="#80FFFFFF"/>
+
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFF"
+            android:text="ĐĂNG KÝ"
+            android:background="@drawable/custorm_button_login"/>
+    </LinearLayout>
+</RelativeLayout>

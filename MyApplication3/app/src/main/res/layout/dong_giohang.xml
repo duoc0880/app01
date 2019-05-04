@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/custorm_vien"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:weightSum="10">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_weight="3">
+        <ImageView
+            android:id="@+id/imgviewlohang"
+            android:adjustViewBounds="true"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+        </ImageView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_margin="5dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="7"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:id="@+id/textviewtenlohang"
+            android:text="Ten mon hang"
+            android:textColor="#0E0E0E"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/textviewgiagiohang"
+            android:textColor="#f20"
+            android:text="gio mon hang"
+            android:textSize="10sp"
+            android:layout_marginTop="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
+            <Button
+                android:id="@+id/buttonminus"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:focusable="false"
+                android:text="-"
+                android:textColor="#1DDAC8"
+                android:background="@drawable/custorm_vien_xanh"
+                android:textSize="30sp"
+                android:layout_marginBottom="5dp"/>
+
+            <Button
+                android:id="@+id/buttonvalues"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:focusable="false"
+                android:text=""
+                android:background="@null"
+                android:textSize="30sp"
+                android:layout_marginBottom="5dp"
+                />
+
+
+
+            <Button
+                android:id="@+id/buttonplus"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:focusable="true"
+                android:text="+"
+                android:textColor="#1DDAC8"
+                android:background="@drawable/custorm_vien_xanh"
+                android:textSize="30sp"
+                android:layout_marginBottom="5dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>
