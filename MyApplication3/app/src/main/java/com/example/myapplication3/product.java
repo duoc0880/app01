@@ -129,6 +129,6 @@ public class product extends AppCompatActivity {
     private  void Anhxa(){
         toolbar = findViewById(R.id.toolbardienthoai);
         lvdt = findViewById(R.id.listviewdienthoai);
-        tvtoolbar = findViewById(R.id.textviewtoolbar);
+      //  tvtoolbar = findViewById(R.id.textviewtoolbar);
     }
 }

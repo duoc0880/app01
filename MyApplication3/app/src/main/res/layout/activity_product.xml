@@ -10,19 +10,11 @@
     tools:context=".product">
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbardienthoai"
+        app:title="Sản phẩm"
         app:titleTextColor="#FAFAFA"
         android:background="@drawable/grad_bg"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
-        <TextView
-            android:id="@+id/textviewtoolbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="product"
-            android:textSize="30sp"
-            android:textColor="@color/white">
-
-        </TextView>
     </android.support.v7.widget.Toolbar>
     <ListView
         android:id="@+id/listviewdienthoai"

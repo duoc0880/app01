@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -27,7 +28,7 @@ public class Product_details_plus extends AppCompatActivity {
 
     int id = 0;
     String TenChitiet = "";
-    int GiaChitiet = 0;
+    Double GiaChitiet = 0.0;
     String HinhanhChitiet = "";
     String MotaChitiet = "";
     int Idsanpham = 0;
@@ -69,6 +70,13 @@ public class Product_details_plus extends AppCompatActivity {
     private void GetInformation() {
         Intent intent = getIntent();
         Integer position = intent.getIntExtra("details",-1);
+
+        id = MainActivity.arrayProduct.get(position).getId();
+        TenChitiet = MainActivity.arrayProduct.get(position).getName();
+        GiaChitiet = MainActivity.arrayProduct.get(position).getPrice();
+        HinhanhChitiet = MainActivity.arrayProduct.get(position).getImage();
+        MotaChitiet = MainActivity.arrayProduct.get(position).getDescription();
+
         txtten.setText(product.arrayListProduct.get(position).getName());
         txtgia.setText(String.valueOf(product.arrayListProduct.get(position).getPrice()));
         txtmota.setText(product.arrayListProduct.get(position).getDescription());
@@ -91,6 +99,39 @@ public class Product_details_plus extends AppCompatActivity {
         btndatmua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(MainActivity.arrayCart.size()>=0)  // neu gio hang co san pham
+                {
+                    //   int sl = Integer.parseInt(spinner.getSelectItem().toString());
+                    int sl = Integer.parseInt(spinner.getSelectedItem().toString()); //so luong sp
+
+                    for(int i = 0;i<MainActivity.arrayCart.size();i++)
+                    {
+                        if(MainActivity.arrayCart.get(i).getId()==Idsanpham)    // neu la dien thoai
+                        {
+                            MainActivity.arrayCart.get(i).setAmount(MainActivity.arrayCart.get(i).getAmount()+sl); //set lai so luong dt
+                            if(MainActivity.arrayCart.get(i).getAmount()>=10){
+                                MainActivity.arrayCart.get(i).setAmount(10);
+                            }
+                            MainActivity.arrayCart.get(i).setPrice( GiaChitiet*(MainActivity.arrayCart.get(i).getAmount())); // set lai gia
+                            exists = true;
+                        }
+                    }
+                    if(exists == false){
+                        int soluong = Integer.parseInt(spinner.getSelectedItem().toString());
+                        Double Giamoi = soluong*GiaChitiet;
+                        MainActivity.arrayCart.add(new Cart_Model(id,TenChitiet,soluong,HinhanhChitiet,Giamoi));
+                        Log.d(TAG, "onClick: chay");
+                    }
+                }
+                else{
+
+                    int soluong = Integer.parseInt(spinner.getSelectedItem().toString());
+                    Double Giamoi = soluong*GiaChitiet;
+                    MainActivity.arrayCart.add(new Cart_Model(id,TenChitiet,soluong,HinhanhChitiet,Giamoi));
+                }
+
+
                 Intent intent = new Intent(getApplicationContext(),Cart.class);
                 startActivity(intent);
             }
