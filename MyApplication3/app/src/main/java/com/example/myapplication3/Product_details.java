@@ -11,11 +11,29 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Product_details extends AppCompatActivity {
     Toolbar toolbarChitiet;
@@ -23,15 +41,12 @@ public class Product_details extends AppCompatActivity {
     TextView txtten, txtgia, txtmota;
     Spinner spinner;
     Button btndatmua;
-    String TAG = "chitietdienthoai";
+    String TAG = "ProductDetails";
     boolean exists;
+    int id_product = 0;
+    int quantity = 0;
 
-    int id = 0;
-    String TenChitiet = "";
-    Double GiaChitiet = 0.0;
-    String HinhanhChitiet = "";
-    String MotaChitiet = "";
-    int Idsanpham = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,20 +84,57 @@ public class Product_details extends AppCompatActivity {
 
     private void GetInformation() {
         Intent intent = getIntent();
-        Integer position = intent.getIntExtra("details",-1);
-        id = MainActivity.arrayProduct.get(position).getId();
-        TenChitiet = MainActivity.arrayProduct.get(position).getName();
-        GiaChitiet = MainActivity.arrayProduct.get(position).getPrice();
-        HinhanhChitiet = MainActivity.arrayProduct.get(position).getImage();
-        MotaChitiet = MainActivity.arrayProduct.get(position).getDescription();
+        Integer idDetails = intent.getIntExtra("details", -1);
+        Log.d(TAG, "GetInformation: " + idDetails);
+        final RequestQueue requestQueue = Volley.newRequestQueue(this);
+        HashMap<String, String> params = new HashMap<String, String>();
+       // params.put("token", "AbCdEfGh123456");
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,"http://shop-service.j.layershift.co.uk/api/product/view/" + idDetails, new JSONObject(params) ,new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
 
-        txtten.setText(MainActivity.arrayProduct.get(position).getName());
-        txtgia.setText(String.valueOf(MainActivity.arrayProduct.get(position).getPrice()));
-        txtmota.setText(MainActivity.arrayProduct.get(position).getDescription());
-        Picasso.with(getApplicationContext()).load(MainActivity.arrayProduct.get(position).getImage())
-                .placeholder(R.drawable.noimage)
-                .error(R.drawable.error)
-                .into(imgChitiet);
+                        String TenChitiet = "";
+                        Double GiaChitiet = 0.0;
+                        String HinhanhChitiet = "";
+                        String MotaChitiet = "";
+
+                        long price =0;
+                        try {
+                            id_product = response.getInt("id");
+                            TenChitiet = response.getString("name");
+                            MotaChitiet = response.getString("detail");
+                            HinhanhChitiet = response.getString("image");
+                            price = response.getLong("price");
+                            quantity = response.getInt("quantity");
+
+                               txtten.setText(TenChitiet);
+                               txtgia.setText(String.valueOf(price) + " vnđ");
+                               txtmota.setText(MotaChitiet);
+                               Picasso.with(getApplicationContext()).load(HinhanhChitiet)
+                                       .placeholder(R.drawable.noimage)
+                                       .error(R.drawable.error)
+                                       .into(imgChitiet);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "onErrorResponse: " + error.getMessage());
+            }
+        });
+        requestQueue.add(req);
+
+        //   txtten.setText(MainActivity.arrayProduct.get(idDetails).getName());
+        //   txtgia.setText(String.valueOf(MainActivity.arrayProduct.get(idDetails).getPrice()) + " vnđ");
+        //   txtmota.setText(MainActivity.arrayProduct.get(idDetails).getDescription());
+        //   Picasso.with(getApplicationContext()).load(MainActivity.arrayProduct.get(idDetails).getImage())
+        //           .placeholder(R.drawable.noimage)
+        //           .error(R.drawable.error)
+        //           .into(imgChitiet);
 
 
     }
@@ -98,44 +150,82 @@ public class Product_details extends AppCompatActivity {
         btndatmua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(MainActivity.arrayCart.size()>=0)  // neu gio hang co san pham
-                {
-                    //   int sl = Integer.parseInt(spinner.getSelectItem().toString());
                     int sl = Integer.parseInt(spinner.getSelectedItem().toString()); //so luong sp
 
-                    for(int i = 0;i<MainActivity.arrayCart.size();i++)
-                    {
-                        if(MainActivity.arrayCart.get(i).getId()==Idsanpham)    // neu la dien thoai
-                        {
-                            MainActivity.arrayCart.get(i).setAmount(MainActivity.arrayCart.get(i).getAmount()+sl); //set lai so luong dt
-                            if(MainActivity.arrayCart.get(i).getAmount()>=10){
-                                MainActivity.arrayCart.get(i).setAmount(10);
+                    try {
+                        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                        JSONObject jsonBody = new JSONObject();
+                        jsonBody.put("id_product",id_product );
+                        jsonBody.put("quantity",sl );
+                        final String mRequestBody = jsonBody.toString();
+
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://shop-service.j.layershift.co.uk/api/cart/add",
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        Log.d(TAG, "onResponse: " + Login.token);
+                                        Log.d(TAG, "onResponse: " + response);
+
+                                        if (response.length()>0) {
+
+                                        }
+
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
                             }
-                            MainActivity.arrayCart.get(i).setPrice( GiaChitiet*(MainActivity.arrayCart.get(i).getAmount())); // set lai gia
-                            exists = true;
-                        }
+                        }) {
+                            @Override
+                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                Map<String, String> headers = new HashMap<>();
+                                // Basic Authentication
+                                //String auth = "Basic " + Base64.encodeToString(CONSUMER_KEY_AND_SECRET.getBytes(), Base64.NO_WRAP);
+
+                                headers.put("Authorization", "Bearer " + Login.token);
+                                return headers;
+                            }
+                            @Override
+                            public String getBodyContentType() {
+                                return "application/json; charset=utf-8";
+                            }
+
+                            @Override
+                            public byte[] getBody() throws AuthFailureError {
+                                try {
+                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                } catch (UnsupportedEncodingException uee) {
+                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                    return null;
+                                }
+                            }
+
+    /*            @Override
+                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                    String responseString = "";
+                    if (response != null) {
+                        responseString = String.valueOf(response.statusCode);
                     }
-                    if(exists == false){
-                        int soluong = Integer.parseInt(spinner.getSelectedItem().toString());
-                        Double Giamoi = soluong*GiaChitiet;
-                        MainActivity.arrayCart.add(new Cart_Model(id,TenChitiet,soluong,HinhanhChitiet,Giamoi));
-                        Log.d(TAG, "onClick: chay");
+                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                } */
+                        };
+
+                        requestQueue.add(stringRequest);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }
-                else{
-
-                    int soluong = Integer.parseInt(spinner.getSelectedItem().toString());
-                    Double Giamoi = soluong*GiaChitiet;
-                    MainActivity.arrayCart.add(new Cart_Model(id,TenChitiet,soluong,HinhanhChitiet,Giamoi));
-                }
 
 
-                Intent intent = new Intent(getApplicationContext(),Cart.class);
-                startActivity(intent);
+                    Intent intent = new Intent(getApplicationContext(),Cart.class);
+                    intent.putExtra("IdProductInCart",id_product);
+                    startActivity(intent);
             }
         });
     }
-
+    protected void onPause(){
+        super.onPause();
+        finish();
+    }
 
     }

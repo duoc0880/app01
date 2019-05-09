@@ -5,7 +5,8 @@ public class Cart_Model {
     String product;
     Integer amount;
     String img;
-    Double price;
+
+    long price;
 
     public Cart_Model(Integer id, String product, Integer amount, String img) {
         this.id = id;
@@ -15,11 +16,18 @@ public class Cart_Model {
         this.price = price;
     }
 
-    public Cart_Model(Integer id, String product, Integer amount, String img, Double price) {
+    public Cart_Model(Integer id, String product, Integer amount, String img, long price) {
         this.id = id;
         this.product = product;
         this.amount = amount;
         this.img = img;
+        this.price = price;
+    }
+
+    public Cart_Model(Integer id, String product, Integer amount, long price) {
+        this.id = id;
+        this.product = product;
+        this.amount = amount;
         this.price = price;
     }
 
@@ -55,11 +63,11 @@ public class Cart_Model {
         this.img = img;
     }
 
-    public Double getPrice() {
+    public long getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(long price) {
         this.price = price;
     }
 }

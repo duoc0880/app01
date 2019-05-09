@@ -10,7 +10,7 @@
     android:background="@drawable/grad_bg">
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbarchitietsanpham"
-        app:title="Chi Tiet San Pham"
+        app:title="Chi tiết sản phẩm"
         app:titleTextColor="@color/white"
         android:background="@drawable/grad_bg"
         android:layout_width="match_parent"
@@ -18,8 +18,9 @@
 
     </android.support.v7.widget.Toolbar>
     <LinearLayout
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:orientation="horizontal">
         <ImageView
             android:id="@+id/imgchitietsanpham"
@@ -29,6 +30,7 @@
             android:layout_height="200dp">
         </ImageView>
         <LinearLayout
+            android:paddingBottom="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -67,7 +69,7 @@
             <Button
                 android:layout_marginTop="20dp"
                 android:id="@+id/buttonmuahang"
-                android:text="Them vao gio hang"
+                android:text="Thêm vào giỏ hàng"
                 android:textSize="15sp"
                 android:textColor="@color/white"
                 android:background="@drawable/custorm_vien_white"
@@ -79,12 +81,12 @@
 
     </LinearLayout>
     <LinearLayout
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
         <TextView
-            android:text="Mo ta san pham"
+            android:text="Mô tả sản phẩm"
             android:textColor="@color/white"
             android:textSize="30sp"
             android:layout_marginTop="5dp"

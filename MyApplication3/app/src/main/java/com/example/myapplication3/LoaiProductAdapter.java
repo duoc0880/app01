@@ -60,7 +60,7 @@ public class LoaiProductAdapter extends BaseAdapter {
 
         viewHolder.txttendienthoai.setText(product.arrayListProduct.get(position).getName());
         DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
-        viewHolder.txtgiadienthoai.setText("Gia: "+ decimalFormat.format(product.arrayListProduct.get(position).getPrice())+ "D");
+        viewHolder.txtgiadienthoai.setText("Giá: "+ decimalFormat.format(product.arrayListProduct.get(position).getPrice())+ " vnđ");
         viewHolder.txtmotadienthoai.setText(product.arrayListProduct.get(position).getDescription());
         Picasso.with(context).load(product.arrayListProduct.get(position).getImage())
                 .placeholder(R.drawable.noimage)

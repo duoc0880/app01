@@ -102,7 +102,6 @@ public class Register extends AppCompatActivity {
                             }
                         }else{
                             Toast.makeText(Register.this, "Đăng ký không thành công, Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
-
                         }
                     }
                 },
@@ -128,5 +127,8 @@ public class Register extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
-
+    protected void onPause(){
+        super.onPause();
+        finish();
+    }
 }

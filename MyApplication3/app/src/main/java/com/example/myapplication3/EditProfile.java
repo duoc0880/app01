@@ -25,12 +25,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditProfile extends AppCompatActivity {
     EditText edtfull, edtemail, edtphone, edtadress;
     Button btn_done;
     String TAG ="EditProfile";
     ImageView img;
+    Integer id=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,11 +44,26 @@ public class EditProfile extends AppCompatActivity {
         edtadress = findViewById(R.id.edittextadress);
         btn_done = findViewById(R.id.button_edit_save);
         img = findViewById(R.id.imageView_avatar);
-        edtfull.setText(Login.enduser.getFullname());
-        edtemail.setText(Login.enduser.getEmail());
-        edtphone.setText(String.valueOf(Login.enduser.getPhone()));
-        edtadress.setText(Login.enduser.getAdress());
-        Picasso.with(getApplicationContext()).load(Login.enduser.getAvatar())
+
+
+        String fullname="", email="", phone="", address="";
+        String avatar="";
+        try {
+            id = Login.jsonObject_profile.getInt("id");
+            fullname = Login.jsonObject_profile.getString("fullname");
+            email = Login.jsonObject_profile.getString("email");
+            phone =Login.jsonObject_profile.getString("phone");
+            address =Login.jsonObject_profile.getString("address");
+            avatar = Login.jsonObject_profile.getString("avatar");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        edtfull.setText(fullname);
+        edtemail.setText(email);
+        edtphone.setText(phone);
+        edtadress.setText(address);
+        Picasso.with(getApplicationContext()).load(avatar)
                 .placeholder(R.drawable.noimage)
                 .error(R.drawable.error)
                 .into(img);
@@ -63,10 +81,7 @@ public class EditProfile extends AppCompatActivity {
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
             JSONObject jsonBody = new JSONObject();
-            final String fullname = edtfull.getText().toString().trim();
-            final String email = edtemail.getText().toString().trim();
-            final String address = edtadress.getText().toString().trim();
-            final Integer phone = Integer.parseInt(edtphone.getText().toString().trim());
+
 
             jsonBody.put("fullname",edtfull.getText().toString().trim() );
             jsonBody.put("avatar", "https://media.laodong.vn/storage/newsportal/2019/4/12/727649/Tram-Anh4.jpg?w=888&h=592&crop=auto&scale=both");
@@ -74,19 +89,14 @@ public class EditProfile extends AppCompatActivity {
             jsonBody.put("phone", edtphone.getText().toString().trim());
             jsonBody.put("address", edtadress.getText().toString().trim());
             final String mRequestBody = jsonBody.toString();
-            Log.d(TAG, "Edit_Profile: " + mRequestBody );
-
-            StringRequest stringRequest = new StringRequest(Request.Method.PUT, "http://shop-service.j.layershift.co.uk/api/account/8",
+            StringRequest stringRequest = new StringRequest(Request.Method.PUT, "http://shop-service.j.layershift.co.uk/api/account/7",
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
+                            Log.d(TAG, "onResponse: " + response);
                             if (response.length()>0){
                                 Toast.makeText(getApplicationContext(),"Thông tin đã chỉnh sửa thành công!",Toast.LENGTH_SHORT).show();
-                                Log.d(TAG, " " + Login.enduser.getFullname()+ " " + Login.enduser.getUsername());
-                                Login.enduser.setFullname(fullname);
-                                Login.enduser.setEmail(email);
-                                Login.enduser.setAdress(address);
-                                Login.enduser.setPhone(phone);
+
                                 Intent intent = new Intent(EditProfile.this, MainActivity.class);
                                 startActivity(intent);
                             }else{
@@ -100,10 +110,21 @@ public class EditProfile extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
                     Toast.makeText(getApplicationContext(),"Chỉnh sửa thông tin không thành công", Toast.LENGTH_SHORT).show();
                 }
-            }) {
+            })
+
+            {
+
+
                 @Override
                 public String getBodyContentType() {
                     return "application/json; charset=utf-8";
+                }
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "Bearer " + Login.token);
+                    return headers;
                 }
 
                 @Override
@@ -116,7 +137,6 @@ public class EditProfile extends AppCompatActivity {
                     }
                 }
             };
-
             requestQueue.add(stringRequest);
         } catch (JSONException e) {
             e.printStackTrace();

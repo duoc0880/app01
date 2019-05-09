@@ -52,7 +52,7 @@ public class Product_Adapter extends  RecyclerView.Adapter<Product_Adapter.ItemH
         itemHolder.txttensanpham.setText(sanpham.getName());
 
         DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
-        itemHolder.txtgiasanpham.setText("Gia: "+ decimalFormat.format(sanpham.getPrice())+ "D");
+        itemHolder.txtgiasanpham.setText("Giá: "+ decimalFormat.format(sanpham.getPrice())+ " vnđ");
         Picasso.with(context).load(sanpham.getImage())
                 .placeholder(R.drawable.noimage)
                 .error(R.drawable.error)

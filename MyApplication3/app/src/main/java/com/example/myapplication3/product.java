@@ -33,7 +33,7 @@ public class product extends AppCompatActivity {
     String value;
     public static ArrayList<Product_Model> arrayListProduct;
     public static LoaiProductAdapter loaiProductAdapter;
-
+    public static Integer id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +52,9 @@ public class product extends AppCompatActivity {
 
         lvdt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id1) {
                 Intent intent = new Intent(product.this, Product_details_plus.class);
-                intent.putExtra("details",position);
+                intent.putExtra("details",id);
                 startActivity(intent);
             }
         });
@@ -63,7 +63,7 @@ public class product extends AppCompatActivity {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Integer id;
+
                         String name, category,description,details, image;
                         Double price;
 

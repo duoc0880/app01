@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
         btnaccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 if(logOut==false) {
                     Intent intent = new Intent(MainActivity.this, Login.class);
                     startActivity(intent);
@@ -97,15 +99,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-     //  Intent intent1 = getIntent();
-     //   String value = intent1.getStringExtra("key01");
-      //  Log.d(TAG, "onCreate: " + Login.enduser.getUsername() );
+        //  Intent intent1 = getIntent();
+        //   String value = intent1.getStringExtra("key01");
+        //  Log.d(TAG, "onCreate: " + Login.enduser.getUsername() );
         if(Login.enduser!= null) {
             btnaccount.setText(Login.enduser.getUsername());
             logOut = true;
         }
-
-
 
         GETNewProduct();
 
@@ -134,15 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerViewManHinhChinh.setAdapter(product_Adapter);
         //mang cart
-        if(arrayCart != null )
-        {
-        }
-        else
-        {
-            arrayCart = new ArrayList<>();
 
-
-        }
 
     }
     private void ActionBar() {
@@ -181,11 +173,12 @@ public class MainActivity extends AppCompatActivity {
     private void GetDuLieusp(){
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest("http://shop-service.j.layershift.co.uk/api/category/all",  new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest("http://shop-service.j.layershift.co.uk/api/category/view/all",  new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
 
                 if(response != null){
+                    Log.d(TAG, "onResponse: " + response);
                     for(int i=0;i<response.length();i++) {
                         try {
                             JSONObject jsonObject = response.getJSONObject(i);
@@ -247,7 +240,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(MainActivity.this, Product_details.class);
-                intent.putExtra("details", position);
+                intent.putExtra("details", arrayProduct.get(position).getId());
+                Log.d(TAG, "onItemClick: "+ arrayProduct.get(position).getId());
                 startActivity(intent);
             }
 
@@ -260,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void GETNewProduct() {
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest("http://shop-service.j.layershift.co.uk/api/product/top",
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest("http://shop-service.j.layershift.co.uk/api/product/view/top",
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {

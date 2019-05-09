@@ -41,7 +41,7 @@ public class Product_details_plus extends AppCompatActivity {
           ActionToolbar();
           GetInformation();
           CatchEventSpinner();
-         EvenButton ();
+     //    EvenButton ();
 
 
     }
@@ -78,7 +78,7 @@ public class Product_details_plus extends AppCompatActivity {
         MotaChitiet = MainActivity.arrayProduct.get(position).getDescription();
 
         txtten.setText(product.arrayListProduct.get(position).getName());
-        txtgia.setText(String.valueOf(product.arrayListProduct.get(position).getPrice()));
+        txtgia.setText(String.valueOf(product.arrayListProduct.get(position).getPrice()) + " vnđ");
         txtmota.setText(product.arrayListProduct.get(position).getDescription());
         Picasso.with(getApplicationContext()).load(product.arrayListProduct.get(position).getImage())
                 .placeholder(R.drawable.noimage)
@@ -95,7 +95,7 @@ public class Product_details_plus extends AppCompatActivity {
     }
 
 
-    private void EvenButton (){
+ /*   private void EvenButton (){
         btndatmua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,6 +137,6 @@ public class Product_details_plus extends AppCompatActivity {
             }
         });
     }
-
+*/
 
     }

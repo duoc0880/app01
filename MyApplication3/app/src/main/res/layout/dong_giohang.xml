@@ -27,6 +27,18 @@
         android:layout_weight="7"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp">
+        <LinearLayout
+
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+        <LinearLayout
+
+            android:orientation="vertical"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content">
         <TextView
             android:id="@+id/textviewtenlohang"
             android:text="Ten mon hang"
@@ -43,6 +55,20 @@
             android:layout_marginTop="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+            <Button
+
+                android:id="@+id/buttonxoa"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="right"
+                android:text="x">
+
+            </Button>
+
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -16,13 +16,17 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Login extends AppCompatActivity {
     EditText edtuser, edtpass;
@@ -30,6 +34,8 @@ public class Login extends AppCompatActivity {
     String TAG = "Login";
     String user ="", pass="", temp;
     public static TramAnh enduser;
+    public static String token;
+    public static JSONObject jsonObject_profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +55,6 @@ public class Login extends AppCompatActivity {
                     pd.setMessage("Chờ tí...");
                     pd.show();
                     LoginRequest();
-                //    Log.d(TAG, "onClick: " + enduser.getUsername());
 
                 }else{
                     Toast.makeText(getApplicationContext(), "vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
@@ -81,48 +86,65 @@ public class Login extends AppCompatActivity {
             jsonBody.put("password", edtpass.getText().toString().trim());
             final String mRequestBody = jsonBody.toString();
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://shop-service.j.layershift.co.uk/api/login",
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://shop-service.j.layershift.co.uk/api/login-customer",
                     new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     Log.d(TAG, "onResponse: " + response);
+
                     if (response.length()>0) {
-                        String ten = "";
-                        Integer id = 0;
-                        JSONObject jo;
-                        String fullname;
-                        String email;
-                        String adress;
-                        long phone = 0;
-                        String avatar;
 
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            ten = jsonObject.getString("username");
-                            id = jsonObject.getInt("id");
-                            jo =  jsonObject.getJSONObject("profile");
-
-                            fullname = jo.getString("fullname");
-
-                            email = jo.getString("email");
-
-                            phone = jo.getLong("phone");
-
-                            adress = jo.getString("address");
-
-                            avatar = jo.getString("avatar");
-
-
-                            enduser = new TramAnh(id,ten,fullname,avatar,email,phone,adress);
-                            Log.d(TAG, "onResponse: " + enduser.getAvatar());
+                            token = jsonObject.getString("accessToken");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
                         Intent intent = new Intent(Login.this, MainActivity.class);
+                        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                        JSONObject parameters = new JSONObject();
+                        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, "http://shop-service.j.layershift.co.uk/api/account/7", parameters,new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d(TAG, "onResponse: " + response);
+                                Integer id;
+                                String username;
 
-                        //   intent.putExtra("key01",enduser.getUsername());
-                          startActivity(intent);
+                                try {
+                                    id = response.getInt("id");
+                                    username = response.getString("username");
+                                    jsonObject_profile = response.getJSONObject("profile");
+                                    Log.d(TAG, "onResponse: " + jsonObject_profile);
+                                    Login.enduser = new TramAnh(id,username);
+                                    Intent intent = new Intent(Login.this, MainActivity.class );
+                                    startActivity(intent);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("onErrorResponse", error.toString());
+                            }
+                        }) {
+                            @Override
+                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                Map<String, String> headers = new HashMap<>();
+                                // Basic Authentication
+                                //String auth = "Basic " + Base64.encodeToString(CONSUMER_KEY_AND_SECRET.getBytes(), Base64.NO_WRAP);
+
+                                headers.put("Authorization", "Bearer " + token);
+                                return headers;
+                            }
+                        };
+                        queue.add(request);
+
+
+                        startActivity(intent);
 
                     }else{
                         Toast.makeText(Login.this,"Bạn đã nhập sai Vui lòng nhập lại!",Toast.LENGTH_SHORT).show();
@@ -166,5 +188,9 @@ public class Login extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    protected void onPause(){
+        super.onPause();
+        finish();
     }
 }
