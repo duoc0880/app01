@@ -71,7 +71,7 @@ public class CartAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
-        final int soluonghientai[] = new int[100];
+
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.dong_giohang, null);
         Log.d(TAG, "getView: ");
@@ -93,6 +93,7 @@ public class CartAdapter extends BaseAdapter {
         txtgiagiohang.setText(decimalFormat.format(giohang.getPrice())+ "vnđ");
 
         btnvalues.setText(String.valueOf(giohang.getAmount()));
+        Log.d(TAG, "getView: " +giohang.getImg());
         Picasso.with(context).load(giohang.getImg())
                .placeholder(R.drawable.noimage)
                .error(R.drawable.error)
@@ -164,52 +165,54 @@ public class CartAdapter extends BaseAdapter {
             public void onClick(View view){
                 try {
                     int slht = giohang.getAmount();
-                    RequestQueue requestQueue = Volley.newRequestQueue(context);
-                    JSONObject jsonBody = new JSONObject();
-                    jsonBody.put("id_product",giohang.getId() );
-                    jsonBody.put("quantity",slht+1 );
-                    final String mRequestBody = jsonBody.toString();
 
-                    StringRequest stringRequest = new StringRequest(Request.Method.PUT, "http://shop-service.j.layershift.co.uk/api/cart/update",
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
+                        RequestQueue requestQueue = Volley.newRequestQueue(context);
+                        JSONObject jsonBody = new JSONObject();
+                        jsonBody.put("id_product", giohang.getId());
+                        jsonBody.put("quantity", slht + 1);
+                        final String mRequestBody = jsonBody.toString();
 
-                                    Log.d(TAG, "onResponse: " + response);
+                        StringRequest stringRequest = new StringRequest(Request.Method.PUT, "http://shop-service.j.layershift.co.uk/api/cart/update",
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
 
-                                    Intent intent = new Intent(context,Cart.class);
-                                    context.startActivity(intent);
+                                        Log.d(TAG, "onResponse: " + response);
 
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
+                                        Intent intent = new Intent(context, Cart.class);
+                                        context.startActivity(intent);
 
-                        }
-                    }) {
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            Map<String, String> headers = new HashMap<>();
-                            // Basic Authentication
-                            //String auth = "Basic " + Base64.encodeToString(CONSUMER_KEY_AND_SECRET.getBytes(), Base64.NO_WRAP);
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
 
-                            headers.put("Authorization", "Bearer " + Login.token);
-                            return headers;
-                        }
-                        @Override
-                        public String getBodyContentType() {
-                            return "application/json; charset=utf-8";
-                        }
-
-                        @Override
-                        public byte[] getBody() throws AuthFailureError {
-                            try {
-                                return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                            } catch (UnsupportedEncodingException uee) {
-                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                                return null;
                             }
-                        }
+                        }) {
+                            @Override
+                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                Map<String, String> headers = new HashMap<>();
+                                // Basic Authentication
+                                //String auth = "Basic " + Base64.encodeToString(CONSUMER_KEY_AND_SECRET.getBytes(), Base64.NO_WRAP);
+
+                                headers.put("Authorization", "Bearer " + Login.token);
+                                return headers;
+                            }
+
+                            @Override
+                            public String getBodyContentType() {
+                                return "application/json; charset=utf-8";
+                            }
+
+                            @Override
+                            public byte[] getBody() throws AuthFailureError {
+                                try {
+                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                } catch (UnsupportedEncodingException uee) {
+                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                    return null;
+                                }
+                            }
 
     /*            @Override
                 protected Response<String> parseNetworkResponse(NetworkResponse response) {
@@ -219,9 +222,10 @@ public class CartAdapter extends BaseAdapter {
                     }
                     return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
                 } */
-                    };
+                        };
 
-                    requestQueue.add(stringRequest);
+                        requestQueue.add(stringRequest);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -233,52 +237,109 @@ public class CartAdapter extends BaseAdapter {
             public void onClick(View view){
                 try {
                     int slht = giohang.getAmount();
-                    RequestQueue requestQueue = Volley.newRequestQueue(context);
-                    JSONObject jsonBody = new JSONObject();
-                    jsonBody.put("id_product",giohang.getId() );
-                    jsonBody.put("quantity",slht-1 );
-                    final String mRequestBody = jsonBody.toString();
+                    if(slht<2){
+                        try {
+                            RequestQueue requestQueue = Volley.newRequestQueue(context);
+                            JSONObject jsonBody = new JSONObject();
+                            jsonBody.put("id_product",giohang.getId());
 
-                    StringRequest stringRequest = new StringRequest(Request.Method.PUT, "http://shop-service.j.layershift.co.uk/api/cart/update",
-                            new Response.Listener<String>() {
+                            final String mRequestBody = jsonBody.toString();
+
+                            StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://shop-service.j.layershift.co.uk/api/cart/delete",
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            Log.d(TAG, "onResponse: " + response);
+
+                                            Intent intent = new Intent(context,Cart.class);
+                                            context.startActivity(intent);
+
+                                        }
+                                    }, new Response.ErrorListener() {
                                 @Override
-                                public void onResponse(String response) {
-
-                                    Log.d(TAG, "onResponse: " + response);
-
-                                    Intent intent = new Intent(context,Cart.class);
-                                    context.startActivity(intent);
-
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.d(TAG, "onErrorResponse: " + error.getMessage());
                                 }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
+                            }) {
+                                @Override
+                                public Map<String, String> getHeaders() throws AuthFailureError {
+                                    Map<String, String> headers = new HashMap<>();
+                                    // Basic Authentication
+                                    //String auth = "Basic " + Base64.encodeToString(CONSUMER_KEY_AND_SECRET.getBytes(), Base64.NO_WRAP);
 
-                        }
-                    }) {
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            Map<String, String> headers = new HashMap<>();
-                            // Basic Authentication
-                            //String auth = "Basic " + Base64.encodeToString(CONSUMER_KEY_AND_SECRET.getBytes(), Base64.NO_WRAP);
+                                    headers.put("Authorization", "Bearer " + Login.token);
+                                    return headers;
+                                }
 
-                            headers.put("Authorization", "Bearer " + Login.token);
-                            return headers;
-                        }
-                        @Override
-                        public String getBodyContentType() {
-                            return "application/json; charset=utf-8";
-                        }
+                                @Override
+                                public String getBodyContentType() {
+                                    return "application/json; charset=utf-8";
+                                }
 
-                        @Override
-                        public byte[] getBody() throws AuthFailureError {
-                            try {
-                                return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                            } catch (UnsupportedEncodingException uee) {
-                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                                return null;
+                                @Override
+                                public byte[] getBody() throws AuthFailureError {
+                                    try {
+                                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                    } catch (UnsupportedEncodingException uee) {
+                                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                        return null;
+                                    }
+                                }
+
+                            };
+
+                            requestQueue.add(stringRequest);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }else {
+                        RequestQueue requestQueue = Volley.newRequestQueue(context);
+                        JSONObject jsonBody = new JSONObject();
+                        jsonBody.put("id_product", giohang.getId());
+                        jsonBody.put("quantity", slht - 1);
+                        final String mRequestBody = jsonBody.toString();
+
+                        StringRequest stringRequest = new StringRequest(Request.Method.PUT, "http://shop-service.j.layershift.co.uk/api/cart/update",
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+
+                                        Log.d(TAG, "onResponse: " + response);
+
+                                        Intent intent = new Intent(context, Cart.class);
+                                        context.startActivity(intent);
+
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
                             }
-                        }
+                        }) {
+                            @Override
+                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                Map<String, String> headers = new HashMap<>();
+                                // Basic Authentication
+                                //String auth = "Basic " + Base64.encodeToString(CONSUMER_KEY_AND_SECRET.getBytes(), Base64.NO_WRAP);
+
+                                headers.put("Authorization", "Bearer " + Login.token);
+                                return headers;
+                            }
+
+                            @Override
+                            public String getBodyContentType() {
+                                return "application/json; charset=utf-8";
+                            }
+
+                            @Override
+                            public byte[] getBody() throws AuthFailureError {
+                                try {
+                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                } catch (UnsupportedEncodingException uee) {
+                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                    return null;
+                                }
+                            }
 
     /*            @Override
                 protected Response<String> parseNetworkResponse(NetworkResponse response) {
@@ -288,9 +349,10 @@ public class CartAdapter extends BaseAdapter {
                     }
                     return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
                 } */
-                    };
+                        };
 
-                    requestQueue.add(stringRequest);
+                        requestQueue.add(stringRequest);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -300,6 +362,7 @@ public class CartAdapter extends BaseAdapter {
 
 
         return view;
+
     }
 
 }

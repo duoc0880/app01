@@ -35,7 +35,7 @@ public class Login extends AppCompatActivity {
     String user ="", pass="", temp;
     public static TramAnh enduser;
     public static String token;
-    public static JSONObject jsonObject_profile;
+    JSONObject jsonObject_profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +93,7 @@ public class Login extends AppCompatActivity {
                     Log.d(TAG, "onResponse: " + response);
 
                     if (response.length()>0) {
-
+                            MainActivity.logOut = true;
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             token = jsonObject.getString("accessToken");
@@ -104,19 +104,43 @@ public class Login extends AppCompatActivity {
                         Intent intent = new Intent(Login.this, MainActivity.class);
                         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
                         JSONObject parameters = new JSONObject();
+
                         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, "http://shop-service.j.layershift.co.uk/api/account/7", parameters,new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
                                 Log.d(TAG, "onResponse: " + response);
                                 Integer id;
-                                String username;
+                                String username="";
 
                                 try {
                                     id = response.getInt("id");
                                     username = response.getString("username");
                                     jsonObject_profile = response.getJSONObject("profile");
+
                                     Log.d(TAG, "onResponse: " + jsonObject_profile);
-                                    Login.enduser = new TramAnh(id,username);
+                                    Integer id1;
+                                    String fullname="", email="", address="";
+                                    long phone=0;
+                                    String avatar="";
+                                    try {
+                                        id1 = jsonObject_profile.getInt("id");
+                                        fullname = jsonObject_profile.getString("fullname");
+                                        email = jsonObject_profile.getString("email");
+                                        phone =jsonObject_profile.getLong("phone");
+                                        address =jsonObject_profile.getString("address");
+                                        avatar = jsonObject_profile.getString("avatar");
+                                      //  avatar=avatar.replaceAll("/","");
+                                      //  avatar=avatar.substring(2,avatar.length()-2);
+                                        Log.d(TAG, "onResponse: " + avatar);
+                               //         if(username.length()==0){username=edtuser.getText().toString().trim();}
+                                        enduser = new TramAnh(id,username,fullname,avatar,email,phone,address);
+                                        Log.d(TAG, "onResponse: " + enduser.getAvatar());
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                   // Login.enduser = new TramAnh(id,username);
                                     Intent intent = new Intent(Login.this, MainActivity.class );
                                     startActivity(intent);
                                 } catch (JSONException e) {

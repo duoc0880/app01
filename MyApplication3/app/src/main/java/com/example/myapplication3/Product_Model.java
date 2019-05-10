@@ -17,7 +17,7 @@ public class Product_Model {
 
     private Integer quantity;
 
-    private Double price;
+    private long price;
 
     private Integer countBuy;
 
@@ -25,7 +25,7 @@ public class Product_Model {
 
 
 
-    public Product_Model(Integer id, String name, String description, String detail, String image, Double price, String category) {
+    public Product_Model(Integer id, String name, String description, String detail, String image, long price, String category) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -33,6 +33,14 @@ public class Product_Model {
         this.image = image;
         this.price = price;
         this.category = category;
+    }
+
+    public Product_Model(Integer id, String name, String description, String image, long price) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.image = image;
+        this.price = price;
     }
 
     public String getMessage() {
@@ -99,11 +107,11 @@ public class Product_Model {
         this.quantity = quantity;
     }
 
-    public Double getPrice() {
+    public long getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(long price) {
         this.price = price;
     }
 

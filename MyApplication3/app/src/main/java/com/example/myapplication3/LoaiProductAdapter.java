@@ -1,6 +1,7 @@
 package com.example.myapplication3;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 public class LoaiProductAdapter extends BaseAdapter {
     ArrayList<Product_Model>  arrayLoaiproduct;
     Context context;
-    String TAG ="DienthoaiAdapter";
+    String TAG ="LoaiProductAdapter";
 
     public LoaiProductAdapter(ArrayList<Product_Model> arrayLoaiproduct, Context context) {
         this.arrayLoaiproduct = arrayLoaiproduct;
@@ -57,12 +58,13 @@ public class LoaiProductAdapter extends BaseAdapter {
         }else {
             viewHolder = (ViewHolder) view.getTag();
         }
-
-        viewHolder.txttendienthoai.setText(product.arrayListProduct.get(position).getName());
+        Product_Model lisproduct_listview = arrayLoaiproduct.get(position);
+        viewHolder.txttendienthoai.setText(lisproduct_listview.getName());
         DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
-        viewHolder.txtgiadienthoai.setText("Giá: "+ decimalFormat.format(product.arrayListProduct.get(position).getPrice())+ " vnđ");
-        viewHolder.txtmotadienthoai.setText(product.arrayListProduct.get(position).getDescription());
-        Picasso.with(context).load(product.arrayListProduct.get(position).getImage())
+        viewHolder.txtgiadienthoai.setText("Giá: "+ decimalFormat.format(lisproduct_listview.getPrice())+ " vnđ");
+        viewHolder.txtmotadienthoai.setText(lisproduct_listview.getDescription());
+        Log.d(TAG, "getView: " + lisproduct_listview.getImage());
+        Picasso.with(context).load(lisproduct_listview.getImage())
                 .placeholder(R.drawable.noimage)
                 .error(R.drawable.error)
                 .into(viewHolder.imgdienthoai );

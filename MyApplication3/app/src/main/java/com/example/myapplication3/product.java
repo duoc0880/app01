@@ -30,10 +30,9 @@ public class product extends AppCompatActivity {
     TextView tvtoolbar;
     private Toolbar toolbar;
     private ListView lvdt;
-    String value;
-    public static ArrayList<Product_Model> arrayListProduct;
-    public static LoaiProductAdapter loaiProductAdapter;
-    public static Integer id;
+    ArrayList<Product_Model> arrayListProduct_Lisview;
+    LoaiProductAdapter loaiProductAdapter_Lisview;
+    Integer id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,48 +43,55 @@ public class product extends AppCompatActivity {
 
 
         final Intent intent = getIntent();
-        value = intent.getStringExtra("idproduct");
+        String value = intent.getStringExtra("idproduct");
 
-        arrayListProduct = new ArrayList<>();
-        loaiProductAdapter = new LoaiProductAdapter(arrayListProduct,getApplicationContext());
-        lvdt.setAdapter(loaiProductAdapter);
+        arrayListProduct_Lisview = new ArrayList<>();
+        loaiProductAdapter_Lisview = new LoaiProductAdapter(arrayListProduct_Lisview,getApplicationContext());
+        lvdt.setAdapter(loaiProductAdapter_Lisview);
 
         lvdt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id1) {
-                Intent intent = new Intent(product.this, Product_details_plus.class);
-                intent.putExtra("details",id);
+                Intent intent = new Intent(product.this, Product_details.class);
+                intent.putExtra("details",arrayListProduct_Lisview.get(position).getId());
                 startActivity(intent);
             }
         });
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest("http://shop-service.j.layershift.co.uk/api/product/category/"+value,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest("http://shop-service.j.layershift.co.uk/api/product/view/category/"+value,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
 
-                        String name, category,description,details, image;
-                        Double price;
+                        Log.d(TAG, "onResponse: " + response);
 
-                        for(int i = 0;i<response.length();i++){
+                        String name, description, image;
+                        long price;
+                        for (int i=0;i<response.length();i++){
                             try {
                                 JSONObject jsonObject = response.getJSONObject(i);
-                                id = jsonObject.getInt("id");
+                                id=jsonObject.getInt("id");
                                 name = jsonObject.getString("name");
-                                category = jsonObject.getString("category");
                                 description = jsonObject.getString("description");
-                                details = jsonObject.getString("detail");
-                                price = jsonObject.getDouble("price");
                                 image = jsonObject.getString("image");
-                                category = jsonObject.getString("category");
-                                arrayListProduct.add(new Product_Model(id,name,details,description,image,price,category));
-                                loaiProductAdapter.notifyDataSetChanged();
+                                image=image.replaceAll("/","");
+                                image=image.substring(2,image.length()-2);
+
+
+                                price = jsonObject.getLong("price");
+
+                                arrayListProduct_Lisview.add(new Product_Model(id,name, description,image,price));
+                                loaiProductAdapter_Lisview.notifyDataSetChanged();
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
+
                         }
+
+
+
                     }
                 }, new Response.ErrorListener() {
             @Override

@@ -21,11 +21,7 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".ThongtinKhachhang"
-            android:theme="@style/AppTheme.NoActionBar" ></activity>
 
-        <activity android:name=".Product_details_plus"
-            android:theme="@style/AppTheme.NoActionBar" ></activity>
         <activity android:name=".Product_details"
             android:theme="@style/AppTheme.NoActionBar" ></activity>
         <activity android:name=".EditProfile"

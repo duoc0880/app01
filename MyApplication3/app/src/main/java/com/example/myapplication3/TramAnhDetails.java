@@ -1,6 +1,7 @@
 package com.example.myapplication3;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,24 +42,15 @@ public class TramAnhDetails extends AppCompatActivity {
         tvadress = findViewById(R.id.textviewadress);
         img_avatar = findViewById(R.id.imgavatar);
         btn_edit_profile = findViewById(R.id.button_edit_profile);
-        Integer id;
-        String fullname="", email="", phone="", address="";
-        String avatar="";
-        try {
-            id = Login.jsonObject_profile.getInt("id");
-            fullname = Login.jsonObject_profile.getString("fullname");
-            email = Login.jsonObject_profile.getString("email");
-            phone =Login.jsonObject_profile.getString("phone");
-            address =Login.jsonObject_profile.getString("address");
-            avatar = Login.jsonObject_profile.getString("avatar");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        tvfull.setText(fullname);
-        tvadress.setText(address);
-        tvphone.setText("+84" + phone);
-        tvemail.setText(email);
-        Picasso.with(getApplicationContext()).load(avatar)
+
+        tvfull.setText(Login.enduser.getFullname());
+        tvadress.setText(Login.enduser.getAdress());
+        tvphone.setText("+84" + Login.enduser.getPhone());
+        tvemail.setText(Login.enduser.getEmail());
+       // Log.d(TAG, "onCreate: " + avatar);
+        Picasso.with(getApplicationContext()).load(Login.enduser.getAvatar())
+                .placeholder(R.drawable.noimage)
+                .error(R.drawable.error)
                 .into(img_avatar);
 
         btn_edit_profile.setOnClickListener(new View.OnClickListener() {

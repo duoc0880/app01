@@ -157,27 +157,9 @@ public class Cart extends AppCompatActivity {
         });
     }
 
-    private void CheckData() {
-        if (MainActivity.arrayCart.size() <= 0) {
-            //   giohangAdapter.notifyDataSetChanged();
-            txtthongbao.setVisibility(View.VISIBLE);
-            lvgiohang.setVisibility(View.INVISIBLE);
-        } else {
-            cartAdapter.notifyDataSetChanged();
-            txtthongbao.setVisibility(View.INVISIBLE);
-            lvgiohang.setVisibility(View.VISIBLE);
-        }
 
-    }
 
-    public static void EvenUtil(){
-        long tongtien = 0;
-        for(int i =0; i<MainActivity.arrayCart.size();i++){
-            tongtien +=MainActivity.arrayCart.get(i).getPrice();
-        }
-     //   DecimalFormat decimaFormat = new DecimalFormat("###,###,###");
-     //   txttongtien.setText(decimaFormat.format(tongtien)+ " vnđ");
-    }
+
 
     private void EvenButton(){
         btntieptucmua.setOnClickListener(new View.OnClickListener(){

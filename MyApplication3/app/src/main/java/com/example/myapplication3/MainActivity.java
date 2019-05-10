@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Loaisp> mangloaisp;
     public static ArrayList<Product_Model> arrayProduct;
     Product_Adapter product_Adapter;
-    public static  ArrayList<Cart_Model> arrayCart;
+
 
 
     LoaispAdapter loaispAdapter;
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private   String hinhanhloaisp="", hinhanhsanpham ="";
     private   String motasanpham = "";
     private  Integer giasanpham;
-    Boolean logOut = false;
+    public static Boolean logOut = false;
 
 
 
@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(JSONArray response) {
                         Integer id;
                         String name, category,description,details, image;
-                        Double price;
+                        long price;
 
                         for(int i = 0;i<response.length();i++){
                             try {
@@ -270,8 +270,10 @@ public class MainActivity extends AppCompatActivity {
                                 category = jsonObject.getString("category");
                                 description = jsonObject.getString("description");
                                 details = jsonObject.getString("detail");
-                                price = jsonObject.getDouble("price");
+                                price = jsonObject.getLong("price");
                                 image = jsonObject.getString("image");
+                                image=image.replaceAll("/","");
+                                image=image.substring(2,image.length()-2);
                                 category = jsonObject.getString("category");
                                 arrayProduct.add(new Product_Model(id,name,details,description,image,price,category));
                                 product_Adapter.notifyDataSetChanged();

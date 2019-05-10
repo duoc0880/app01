@@ -48,22 +48,13 @@ public class EditProfile extends AppCompatActivity {
 
         String fullname="", email="", phone="", address="";
         String avatar="";
-        try {
-            id = Login.jsonObject_profile.getInt("id");
-            fullname = Login.jsonObject_profile.getString("fullname");
-            email = Login.jsonObject_profile.getString("email");
-            phone =Login.jsonObject_profile.getString("phone");
-            address =Login.jsonObject_profile.getString("address");
-            avatar = Login.jsonObject_profile.getString("avatar");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        edtfull.setText(fullname);
-        edtemail.setText(email);
-        edtphone.setText(phone);
-        edtadress.setText(address);
-        Picasso.with(getApplicationContext()).load(avatar)
+
+        edtfull.setText(Login.enduser.getFullname());
+        edtemail.setText(Login.enduser.getEmail());
+        edtphone.setText(String.valueOf(Login.enduser.getPhone()));
+        edtadress.setText(Login.enduser.getAdress());
+        Picasso.with(getApplicationContext()).load(Login.enduser.getAvatar())
                 .placeholder(R.drawable.noimage)
                 .error(R.drawable.error)
                 .into(img);
@@ -84,18 +75,24 @@ public class EditProfile extends AppCompatActivity {
 
 
             jsonBody.put("fullname",edtfull.getText().toString().trim() );
-            jsonBody.put("avatar", "https://media.laodong.vn/storage/newsportal/2019/4/12/727649/Tram-Anh4.jpg?w=888&h=592&crop=auto&scale=both");
+            jsonBody.put("avatar", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUxP7GMhwCX70huFuOwnSNWYoDl6MhjNgV5hyZuNun5D2XEjhuIA");
             jsonBody.put("email", edtemail.getText().toString().trim());
             jsonBody.put("phone", edtphone.getText().toString().trim());
             jsonBody.put("address", edtadress.getText().toString().trim());
             final String mRequestBody = jsonBody.toString();
-            StringRequest stringRequest = new StringRequest(Request.Method.PUT, "http://shop-service.j.layershift.co.uk/api/account/7",
+            StringRequest stringRequest = new StringRequest(Request.Method.PUT, "http://shop-service.j.layershift.co.uk/api/account/edit",
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             Log.d(TAG, "onResponse: " + response);
                             if (response.length()>0){
                                 Toast.makeText(getApplicationContext(),"Thông tin đã chỉnh sửa thành công!",Toast.LENGTH_SHORT).show();
+                                Login.enduser.setFullname(edtfull.getText().toString().trim());
+                                Login.enduser.setAvatar("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUxP7GMhwCX70huFuOwnSNWYoDl6MhjNgV5hyZuNun5D2XEjhuIA");
+                                Login.enduser.setAdress(edtadress.getText().toString().trim());
+                                Login.enduser.setPhone(Long.parseLong(edtphone.getText().toString().trim()));
+                                Login.enduser.setEmail(edtemail.getText().toString().trim());
+
 
                                 Intent intent = new Intent(EditProfile.this, MainActivity.class);
                                 startActivity(intent);

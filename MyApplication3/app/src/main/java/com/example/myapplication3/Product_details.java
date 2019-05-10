@@ -1,7 +1,9 @@
 package com.example.myapplication3;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -104,9 +106,11 @@ public class Product_details extends AppCompatActivity {
                             TenChitiet = response.getString("name");
                             MotaChitiet = response.getString("detail");
                             HinhanhChitiet = response.getString("image");
+                            HinhanhChitiet=HinhanhChitiet.replaceAll("/","");
+                            HinhanhChitiet=HinhanhChitiet.substring(2,HinhanhChitiet.length()-2);
                             price = response.getLong("price");
                             quantity = response.getInt("quantity");
-
+                            Log.d(TAG, "onResponse: " + HinhanhChitiet);
                                txtten.setText(TenChitiet);
                                txtgia.setText(String.valueOf(price) + " vnđ");
                                txtmota.setText(MotaChitiet);
@@ -150,13 +154,35 @@ public class Product_details extends AppCompatActivity {
         btndatmua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "onClick: 1");
+                if (MainActivity.logOut==false) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(Product_details.this).create();
+                    alertDialog.setTitle("CẢNH BÁO");
+                    alertDialog.setMessage("Bạn có muốn đăng nhập để thực hiện chức năng này?");
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(Product_details.this, Login.class);
+                                    startActivity(intent);
+                                }
+                            });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "CANCEL",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+
+                } else {
+
                     int sl = Integer.parseInt(spinner.getSelectedItem().toString()); //so luong sp
 
                     try {
                         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
                         JSONObject jsonBody = new JSONObject();
-                        jsonBody.put("id_product",id_product );
-                        jsonBody.put("quantity",sl );
+                        jsonBody.put("id_product", id_product);
+                        jsonBody.put("quantity", sl);
                         final String mRequestBody = jsonBody.toString();
 
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://shop-service.j.layershift.co.uk/api/cart/add",
@@ -166,7 +192,7 @@ public class Product_details extends AppCompatActivity {
                                         Log.d(TAG, "onResponse: " + Login.token);
                                         Log.d(TAG, "onResponse: " + response);
 
-                                        if (response.length()>0) {
+                                        if (response.length() > 0) {
 
                                         }
 
@@ -186,6 +212,7 @@ public class Product_details extends AppCompatActivity {
                                 headers.put("Authorization", "Bearer " + Login.token);
                                 return headers;
                             }
+
                             @Override
                             public String getBodyContentType() {
                                 return "application/json; charset=utf-8";
@@ -217,12 +244,15 @@ public class Product_details extends AppCompatActivity {
                     }
 
 
-                    Intent intent = new Intent(getApplicationContext(),Cart.class);
-                    intent.putExtra("IdProductInCart",id_product);
+                    Intent intent = new Intent(getApplicationContext(), Cart.class);
+                    intent.putExtra("IdProductInCart", id_product);
                     startActivity(intent);
+                }
             }
         });
+
     }
+
     protected void onPause(){
         super.onPause();
         finish();

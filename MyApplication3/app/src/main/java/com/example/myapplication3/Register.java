@@ -33,6 +33,7 @@ public class Register extends AppCompatActivity {
     EditText edtusername, edtpassword, edtconfirmpassword;
     Button btnReg;
     String TAG ="Register";
+    public static Integer id_account;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,53 +80,67 @@ public class Register extends AppCompatActivity {
     private void RegisterRequestVolley(final String username, final String password) {
 
 
-        //Creating a string request
-        StringRequest stringRequest = new StringRequest(Request.Method.POST,"http://shop-service.j.layershift.co.uk/api/account/register" ,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d(TAG, "onResponse: " + response);
-                        if(response.length()>0) {
+        try {
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            JSONObject jsonBody = new JSONObject();
+
+
+            jsonBody.put("username",username );
+            jsonBody.put("password",password );
+            final String mRequestBody = jsonBody.toString();
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://shop-service.j.layershift.co.uk/api/account/register",
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d(TAG, "onResponse: " + response);
                             try {
-                                Integer id_account=0;
-                                String success="";
                                 JSONObject jsonObject = new JSONObject(response);
-                                success = jsonObject.getString("message");
                                 id_account = jsonObject.getInt("id_account");
-                                Login.enduser = new TramAnh(id_account,username);
-                                Log.d(TAG, "onResponse: " + Login.enduser.getUsername());
-                                Intent intent = new Intent(Register.this, MainActivity.class);
-                                startActivity(intent);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                        }else{
-                            Toast.makeText(Register.this, "Đăng ký không thành công, Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(Register.this, Login.class);
+                                startActivity(intent);
+
                         }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                       Toast.makeText(Register.this, "Tài khoảng đã tồn tại, Bạn vui lòng đăng ký tài khoảng khác!",Toast.LENGTH_SHORT).show();
-                    }
-                }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<>();
-                //Adding parameters to request
-                params.put("username", username);
-                params.put("password", password);
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(),"đăng ký không thành công", Toast.LENGTH_SHORT).show();
+                }
+            })
 
-                //returning parameter
-                return params;
-            }
-        };
+            {
 
-        //Adding the string request to the queue
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+           //     @Override
+           //     public Map<String, String> getHeaders() throws AuthFailureError {
+           //         Map<String, String> headers = new HashMap<>();
+           //         headers.put("Authorization", "Bearer " + Login.token);
+           //         return headers;
+           //     }
+
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                        return null;
+                    }
+                }
+            };
+            requestQueue.add(stringRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //Creating a string request
+
     }
     protected void onPause(){
         super.onPause();
