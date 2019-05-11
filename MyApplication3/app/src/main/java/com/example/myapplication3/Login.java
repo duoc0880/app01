@@ -105,7 +105,7 @@ public class Login extends AppCompatActivity {
                         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
                         JSONObject parameters = new JSONObject();
 
-                        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, "http://shop-service.j.layershift.co.uk/api/account/7", parameters,new Response.Listener<JSONObject>() {
+                        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, "http://shop-service.j.layershift.co.uk/api/account/current", parameters,new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
                                 Log.d(TAG, "onResponse: " + response);
